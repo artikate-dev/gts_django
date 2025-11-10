@@ -22,4 +22,4 @@ COPY . .
 
 EXPOSE 8000
 
-CMD ["gunicorn", "gts_django.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "4", "--log-level", "info"]
+CMD ["python", "-m", "gunicorn", "gts_django.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "4", "--log-level", "info"]
