@@ -1,7 +1,8 @@
 FROM python:3.12-slim-bullseye
 
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PATH="/root/.local/bin:/usr/local/bin:$PATH"
 
 
 RUN apt-get update \
@@ -12,9 +13,8 @@ WORKDIR /app
 
 
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
-
-ENV PATH="/root/.local/bin:$PATH"
+RUN pip install --upgrade pip setuptools wheel \
+  && pip install --no-cache-dir -r requirements.txt
 
 
 COPY . .
@@ -22,4 +22,4 @@ COPY . .
 
 EXPOSE 8000
 
-CMD ["python", "-m", "gunicorn", "gts_django.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "4", "--log-level", "info"]
+CMD ["gunicorn", "gts_django.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "4", "--log-level", "info"]
