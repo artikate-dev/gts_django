@@ -1,4 +1,4 @@
-name: Build, Push, and Deploy Django to ECS..
+name: Build, Push, and Deploy Django to ECS...
 
 on:
   push:
