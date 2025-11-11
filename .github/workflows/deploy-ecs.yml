@@ -2,7 +2,7 @@ name: Build, Push, and Deploy to ECS
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main", "dev" ]
 
 env:
   AWS_REGION: ap-south-1
@@ -11,6 +11,7 @@ env:
   ECS_SERVICE_NAME: gts-django-service-task-service-unqq6zcg 
   ECS_TASK_DEFINITION: task-definition.json
   CONTAINER_NAME: gts-django-container
+  IAM_ROLE_ARN: arn:aws:iam::767397940350:role/gts-django-git-ecs-deploy-role
   
 permissions:
   id-token: write 
@@ -20,15 +21,32 @@ jobs:
   build-and-deploy:
     name: Build, Push, and Deploy
     runs-on: ubuntu-latest
+    environment: 
+          name: ${{ github.ref == 'refs/heads/main' && 'production' || 'dev' }}
     
     steps:
+      - name: Set Environment Variables
+        id: set-env
+        run: |
+          if [ "${{ github.ref }}" == "refs/heads/main" ]; then
+            echo "IMAGE_TAG=latest" >> $GITHUB_OUTPUT
+            echo "ECS_CLUSTER_NAME=gts-node-cluster" >> $GITHUB_OUTPUT
+            echo "ECS_SERVICE_NAME=gts-django-service-task-service-unqq6zcg" >> $GITHUB_OUTPUT
+
+          elif [ "${{ github.ref }}" == "refs/heads/dev" ]; then
+            echo "IMAGE_TAG=dev" >> $GITHUB_OUTPUT
+            echo "ECS_CLUSTER_NAME=gts-dev-cluster" >> $GITHUB_OUTPUT     
+            echo "ECS_SERVICE_NAME=gts-django-task-service-dev" >> $GITHUB_OUTPUT 
+            
+          fi
+
       - name: Checkout repository
         uses: actions/checkout@v3
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::767397940350:role/gts-django-git-ecs-deploy-role 
+          role-to-assume: ${{ env.IAM_ROLE_ARN }}
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Log in to Amazon ECR
@@ -38,10 +56,10 @@ jobs:
       - name: Build, tag, and push image to Amazon ECR
         id: build-image
         run: |
-          docker build -t $ECR_REPOSITORY_URI:latest .
-          docker push $ECR_REPOSITORY_URI:latest
-          # This line outputs the new image URI for the next step
-          echo "image=$ECR_REPOSITORY_URI:latest" >> $GITHUB_OUTPUT
+          IMAGE_TAG=${{ steps.set-env.outputs.IMAGE_TAG }}
+          docker build -t $ECR_REPOSITORY_URI:$IMAGE_TAG .
+          docker push $ECR_REPOSITORY_URI:$IMAGE_TAG
+          echo "image=$ECR_REPOSITORY_URI:$IMAGE_TAG" >> $GITHUB_OUTPUT
           
       - name: Render new task definition
         id: render-task
