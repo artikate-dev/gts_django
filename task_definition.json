@@ -1,0 +1,36 @@
+{
+    "family": "gts-django-service-task-test",
+    "networkMode": "awsvpc",
+    "requiresCompatibilities": [
+        "FARGATE"
+    ],
+    "cpu": "1024",
+    "memory": "3072",
+    "executionRoleArn": "arn:aws:iam::767397940350:role/ecsTaskExecutionRole",
+    "taskRoleArn": "arn:aws:iam::767397940350:role/ecsTaskExecutionRole",
+    "containerDefinitions": [
+        {
+            "name": "gts-django-container",
+            "image": "YOUR_IMAGE_URI_WILL_BE_INJECTED_HERE",
+            "portMappings": [
+                {
+                    "containerPort": 8000,
+                    "protocol": "tcp",
+                    "name": "gts-django-container-8000-tcp",
+                    "appProtocol": "http"
+                }
+            ],
+            "essential": true,
+            "environment": [],
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-group": "/ecs/gts-django-service-task",
+                    "awslogs-create-group": "true",
+                    "awslogs-region": "ap-south-1",
+                    "awslogs-stream-prefix": "ecs"
+                }
+            }
+        }
+    ]
+}
