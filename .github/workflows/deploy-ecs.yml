@@ -6,7 +6,7 @@ on:
 
 env:
   AWS_REGION: ap-south-1
-  ECR_REPOSITORY_URI: 767397940350.dkr.ecr.ap-south-1.amazonaws.com/gts/django-service 
+  ECR_REPOSITORY_URI: 767397940350.dkr.ecr.ap-south-1.amazonaws.com/gts/gts_django 
   ECS_CLUSTER_NAME: gts-node-cluster
   ECS_SERVICE_NAME: gts-django-service-task-service-unqq6zcg 
   ECS_TASK_DEFINITION: task-definition.json
@@ -28,7 +28,7 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::767397940350:role/gts-django-service-git-deploy-role # <-- Use your Django deploy role
+          role-to-assume: arn:aws:iam::767397940350:role/gts-django-git-ecs-deploy-role 
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Log in to Amazon ECR
