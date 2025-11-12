@@ -32,11 +32,13 @@ jobs:
             echo "IMAGE_TAG=latest" >> $GITHUB_OUTPUT
             echo "ECS_CLUSTER_NAME=gts-node-cluster" >> $GITHUB_OUTPUT
             echo "ECS_SERVICE_NAME=gts-django-service-task-service-unqq6zcg" >> $GITHUB_OUTPUT
+            echo "ECS_TASK_DEFINITION=task-definition.json" >> $GITHUB_OUTPUT
 
           elif [ "${{ github.ref }}" == "refs/heads/dev" ]; then
             echo "IMAGE_TAG=dev" >> $GITHUB_OUTPUT
             echo "ECS_CLUSTER_NAME=gts-dev-cluster" >> $GITHUB_OUTPUT     
             echo "ECS_SERVICE_NAME=gts-django-task-service-dev" >> $GITHUB_OUTPUT 
+            echo "ECS_TASK_DEFINITION=task-definition-dev.json" >> $GITHUB_OUTPUT
             
           fi
 
@@ -65,7 +67,7 @@ jobs:
         id: render-task
         uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
-          task-definition: ${{ env.ECS_TASK_DEFINITION }}
+          task-definition: ${{ steps.set-env.outputs.ECS_TASK_DEFINITION }}
           container-name: ${{ env.CONTAINER_NAME }}
           image: ${{ steps.build-image.outputs.image }}
 
