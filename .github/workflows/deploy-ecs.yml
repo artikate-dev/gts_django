@@ -7,8 +7,8 @@ on:
 env:
   AWS_REGION: ap-south-1
   ECR_REPOSITORY_URI: 767397940350.dkr.ecr.ap-south-1.amazonaws.com/gts/gts_django 
-  ECS_CLUSTER_NAME: gts-node-cluster
-  ECS_SERVICE_NAME: gts-django-service-task-service-unqq6zcg 
+  ECS_CLUSTER_NAME: gts-prod-cluster
+  ECS_SERVICE_NAME: gts-django-task-service-main
   ECS_TASK_DEFINITION: task-definition.json
   CONTAINER_NAME: gts-django-container
   IAM_ROLE_ARN: arn:aws:iam::767397940350:role/gts-django-git-ecs-deploy-role
@@ -30,8 +30,8 @@ jobs:
         run: |
           if [ "${{ github.ref }}" == "refs/heads/main" ]; then
             echo "IMAGE_TAG=latest" >> $GITHUB_OUTPUT
-            echo "ECS_CLUSTER_NAME=gts-node-cluster" >> $GITHUB_OUTPUT
-            echo "ECS_SERVICE_NAME=gts-django-service-task-service-unqq6zcg" >> $GITHUB_OUTPUT
+            echo "ECS_CLUSTER_NAME=gts-prod-cluster" >> $GITHUB_OUTPUT
+            echo "ECS_SERVICE_NAME=gts-django-task-service-main" >> $GITHUB_OUTPUT
             echo "ECS_TASK_DEFINITION=task-definition.json" >> $GITHUB_OUTPUT
 
           elif [ "${{ github.ref }}" == "refs/heads/dev" ]; then
@@ -70,6 +70,13 @@ jobs:
           task-definition: ${{ steps.set-env.outputs.ECS_TASK_DEFINITION }}
           container-name: ${{ env.CONTAINER_NAME }}
           image: ${{ steps.build-image.outputs.image }}
+          environment-variables: |
+            SECRET_KEY=${{ secrets.SECRET_KEY }}
+            DATABASE_HOST=${{ secrets.DATABASE_HOST }}
+            DATABASE_NAME=${{ secrets.DATABASE_NAME }}
+            DATABASE_USER=${{ secrets.DATABASE_USER }}
+            DATABASE_PASSWORD=${{ secrets.DATABASE_PASSWORD }}
+            DEBUG=${{ secrets.DEBUG }}
 
       - name: Deploy new task definition to ECS
         id: deploy-task
