@@ -1,5 +1,5 @@
 {
-    "family": "gts-django-service-task",
+    "family": "gts-django-service-task-test",
     "networkMode": "awsvpc",
     "requiresCompatibilities": [
         "FARGATE"
