@@ -37,7 +37,7 @@ jobs:
           elif [ "${{ github.ref }}" == "refs/heads/dev" ]; then
             echo "IMAGE_TAG=dev" >> $GITHUB_OUTPUT
             echo "ECS_CLUSTER_NAME=gts-dev-cluster" >> $GITHUB_OUTPUT     
-            echo "ECS_SERVICE_NAME=gts-django-task-service-dev" >> $GITHUB_OUTPUT 
+            echo "ECS_SERVICE_NAME=gts-django-service-dev" >> $GITHUB_OUTPUT 
             echo "ECS_TASK_DEFINITION=task-definition-dev.json" >> $GITHUB_OUTPUT
             
           fi
