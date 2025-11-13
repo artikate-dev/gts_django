@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 import os
 from pathlib import Path
 
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -139,8 +140,13 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
-    
+
     "formatters": {
+        "json": {
+            "()": "pythonjsonlogger.jsonlogger.JsonFormatter",
+            "format": "%(levelname)s %(asctime)s %(name)s %(module)s %(funcName)s %(lineno)d %(message)s",
+            "datefmt": "%Y-%m-%dT%H:%M:%SZ", 
+        },
         "verbose": {
             "format": "[{levelname}] {asctime} {module} {message}",
             "style": "{",
@@ -150,25 +156,27 @@ LOGGING = {
             "style": "{",
         },
     },
+
     "handlers": {
         "console": {
             "class": "logging.StreamHandler", 
-            "formatter": "simple",
+            "formatter": "json",
         },
         "gunicorn_console": {
             "class": "logging.StreamHandler",
             "formatter": "verbose",
         },
     },
+    
     "loggers": {
         "": {
             "handlers": ["console"],
-            "level": "INFO",
-            "propagate": False,
+            "level": os.getenv("DJANGO_LOG_LEVEL", "INFO"), 
+            "propagate": True,
         },
         "django": {
             "handlers": ["console"],
-            "level": "INFO",
+            "level": os.getenv("DJANGO_LOG_LEVEL", "INFO"),
             "propagate": False,
         },
         "gunicorn.error": {
