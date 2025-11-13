@@ -43,6 +43,10 @@
         {
           "name": "DATABASE_PASSWORD",
           "value": "PLACEHOLDER_DATABASE_PASSWORD"
+        },
+        {
+          "name": "ALLOWED_HOSTS",
+          "value": "PLACEHOLDER_ALLOWED_HOSTS"
         }
       ],
       "logConfiguration": {
