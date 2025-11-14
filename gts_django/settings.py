@@ -102,8 +102,8 @@ DATABASES = {
 # }
 
 SPECTACULAR_SETTINGS = {
-    'TITLE': 'GTS API',
-    'DESCRIPTION': 'GTS Django REST API',
+    'TITLE': 'GTS- Core API',
+    'DESCRIPTION': 'Minimal, account, auth, product, inventory and orchestration endpoints for the GTS platform',
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
     'SWAGGER_UI_DIST': 'SIDECAR',
