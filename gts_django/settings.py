@@ -38,6 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'drf_spectacular',
+    'drf_spectacular_sidecar',
     'apps.core',
     'apps.gts',
     'apps.order',
@@ -77,6 +79,10 @@ WSGI_APPLICATION = 'gts_django.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
+REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -93,6 +99,16 @@ DATABASES = {
 #         'PORT': os.getenv('DATABASE_PORT', '5432'),
 #     }
 # }
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'GTS API',
+    'DESCRIPTION': 'GTS Django REST API',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+    'SWAGGER_UI_DIST': 'SIDECAR',
+    'SWAGGER_UI_FAVICON_HREF': 'SIDECAR',
+    'REDOC_DIST': 'SIDECAR'
+}
 
 
 # Password validation

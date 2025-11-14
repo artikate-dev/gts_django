@@ -28,6 +28,9 @@ COPY --from=builder /opt/venv /opt/venv
 
 WORKDIR /app
 COPY . .
+
+RUN /opt/venv/bin/python manage.py collectstatic --noinput
+
 RUN chown -R django:django /app
 
 
